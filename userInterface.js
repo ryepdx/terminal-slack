@@ -41,7 +41,7 @@ module.exports = {
 
             channelList = blessed.list({
                 width: '90%',
-                height: '65%',
+                height: '63%',
                 left: '5%',
                 top: '2%',
                 keys: true,
@@ -64,7 +64,7 @@ module.exports = {
             dmTitle = blessed.text({
                 width: '90%',
                 left: '5%',
-                top: '66%',
+                top: '65%',
                 align: 'center',
                 content: '{bold}Messages{/bold}',
                 tags: true
