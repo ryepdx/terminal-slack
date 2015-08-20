@@ -29,10 +29,9 @@ module.exports = {
                         fg: '#888'
                     }
                 }
-
             }),
 
-            sideBarTitle = blessed.text({
+            channelTitle = blessed.text({
                 width: '90%',
                 left: '5%',
                 align: 'center',
@@ -42,15 +41,52 @@ module.exports = {
 
             channelList = blessed.list({
                 width: '90%',
-                height: '85%',
+                height: '65%',
                 left: '5%',
-                top: '10%',
+                top: '2%',
                 keys: true,
                 vi: true,
+                border: {
+                    type: 'line'
+                },
                 style: {
+                    border: {
+                        fg: '#fff'
+                    },
                     selected: {
-                        bg: '#373b41',
-                        fg: '#c5c8c6'
+                        bg: '#000',
+                        fg: '#fff'
+                    }
+                },
+                tags: true
+            }),
+
+            dmTitle = blessed.text({
+                width: '90%',
+                left: '5%',
+                top: '66%',
+                align: 'center',
+                content: '{bold}Messages{/bold}',
+                tags: true
+            }),
+
+            dmList = blessed.list({
+                width: '90%',
+                height: '31%',
+                left: '5%',
+                top: '67%',
+                keys: true,
+                vi: true,
+                border: {
+                    type: 'line'
+                },
+                style: {
+                    border: {
+                        fg: '#fff'
+                    },
+                    selected: {
+                        bg: '#000',
+                        fg: '#fff'
                     }
                 },
                 tags: true
@@ -83,22 +119,36 @@ module.exports = {
                 top: '10%',
                 scrollable: true,
                 alwaysScroll: true,
-                tags: true
+                tags: true,
+                style: {
+                    border: {
+                        fg: '#fff'
+                    }
+                }
             }),
 
             messageInput = blessed.textbox({
                 width: '90%',
                 left: '5%',
-                top: '85%',
+                height: '15%',
+                top: '83%',
+
                 keys: true,
                 inputOnFocus: true,
                 border: {
                     type: 'line'
+                },
+                style: {
+                    border: {
+                        fg: '#fff'
+                    }
                 }
             });
 
-        sideBar.append(sideBarTitle);
+        sideBar.append(channelTitle);
         sideBar.append(channelList);
+        sideBar.append(dmTitle);
+        sideBar.append(dmList);
         mainWindow.append(mainWindowTitle);
         mainWindow.append(chatWindow);
         mainWindow.append(messageInput);
@@ -111,6 +161,8 @@ module.exports = {
                 case 'escape': process.exit(0);
                     break;
                 case 'C-c': channelList.focus(); // ctrl-c for channels
+                    break;
+                case 'C-r': dmList.focus(); // ctrl-r for direct messages
                     break;
                 case 'C-w': messageInput.focus(); // ctrl-w for write
                     break;
@@ -126,6 +178,7 @@ module.exports = {
         messageInput.on('keypress', function(ch, key){
             if (    key.full === 'escape' ||
                     key.full === 'C-c'    ||
+                    key.full === 'C-r'    ||
                     key.full === 'C-w'    ||
                     key.full === 'C-l'   ) {
                 messageInput.cancel();
@@ -149,15 +202,23 @@ module.exports = {
 
         // event handlers for focus and blur of inputs
         channelList.on('focus', function() {
-            sideBar.style.border = {'fg': '#cc6666'};
+            channelList.style.border = {'fg': '#ff0000'};
             screen.render();
         });
         channelList.on('blur', function() {
-            sideBar.style.border = {'fg': '#888'};
+            channelList.style.border = {'fg': '#888'};
+            screen.render();
+        });
+        dmList.on('focus', function() {
+            dmList.style.border = {'fg': '#ff0000'};
+            screen.render();
+        });
+        dmList.on('blur', function() {
+            dmList.style.border = {'fg': '#888'};
             screen.render();
         });
         messageInput.on('focus', function() {
-            messageInput.style.border = {'fg': '#cc6666'};
+            messageInput.style.border = {'fg': '#ff0000'};
             screen.render();
         });
         messageInput.on('blur', function() {
@@ -176,8 +237,10 @@ module.exports = {
         return {
             screen: screen,
             sideBar: sideBar,
-            sideBarTitle: sideBarTitle,
+            channelTitle: channelTitle,
             channelList: channelList,
+            dmTitle: dmTitle,
+            dmList: dmList,
             mainWindow: mainWindow,
             mainWindowTitle: mainWindowTitle,
             chatWindow: chatWindow,
