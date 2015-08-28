@@ -175,6 +175,7 @@ module.exports = {
         // Quit on Escape or Control-C.
         channelList.on('keypress', keyBindings);
         chatWindow.on('keypress', keyBindings);
+        dmList.on('keypress', keyBindings);
         messageInput.on('keypress', function(ch, key){
             if (    key.full === 'escape' ||
                     key.full === 'C-c'    ||
