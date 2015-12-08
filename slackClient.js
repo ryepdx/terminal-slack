@@ -23,7 +23,6 @@ module.exports = {
         });
     },
     getChannels: function(callback) {
-
         request.get({
             url: 'https://slack.com/api/channels.list',
             qs: {
@@ -71,11 +70,35 @@ module.exports = {
             if(callback) callback(error, response, data);
         });
     },
+    getDMs: function(callback) {
+      request.get({
+          url: 'https://slack.com/api/im.list',
+          qs: {
+              token: TOKEN
+          }
+      },
+        function(error, response, data) {
+            if(callback) callback(error,response, data);
+        });
+    },
+
     getUsers: function(callback) {
         request.get({
             url: 'https://slack.com/api/users.list',
             qs: {
                 token: TOKEN,
+            }
+        },
+        function(error, response, data) {
+            if(callback) callback(error, response, data);
+        });
+    },
+    getUserName: function(id, callback) {
+        request.get({
+            url: 'https://slack.com/api/users.info',
+            qs: {
+                token: TOKEN,
+                user: id
             }
         },
         function(error, response, data) {

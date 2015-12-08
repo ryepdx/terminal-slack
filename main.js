@@ -4,6 +4,7 @@ var ui = require('./userInterface.js'),
     components = ui.init(), // ui components
     users,
     channels,
+    dms,
     currentChannelId,
 
     // generates ids for messages
@@ -13,6 +14,12 @@ var ui = require('./userInterface.js'),
             return id += 1;
         };
     })();
+var log = require('bunyan').createLogger({
+    name: 'Slack',
+    streams: [{
+        path: 'all.log'
+    }]
+});
 
 slack.init(function(data, ws) {
     var currentUser = data.self;
@@ -149,6 +156,30 @@ components.channelList.on('select', function(data) {
             slack.markChannel(currentChannelId, data.latest);
         });
     });
+});
+
+// set the direct message list to the direct messages returned from slack
+slack.getDMs(function(error, response, data){
+    if (error || response.statusCode != 200) {
+        console.log('Error: ', error, response || response.statusCode);
+        return;
+    }
+    data = JSON.parse(data);
+    dms = data.ims;
+    components.dmList.setItems(
+        dms.map(function(dm) {
+            return dm.user;
+            // slack.getUserName(dm.user, function(error, response, data){
+            //     if (error || response.statusCode != 200) {
+            //         console.log('Error: ', error, reponse || response.statusCode);
+            //         return;
+            //     }
+            //     data = JSON.parse(data);
+            //     username = data.user.real_name;
+            //     return username;
+            // });
+        })
+    );
 });
 
 // handles the reply to say that a message was successfully sent
